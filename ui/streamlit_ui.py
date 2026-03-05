@@ -191,7 +191,7 @@ st.title("AI Weather Intelligence Dashboard")
 st.write("Get real-time weather, forecast, and air quality data.")
 
 
-# -----------------------------
+## -----------------------------
 # WEATHER SEARCH
 # -----------------------------
 
@@ -199,19 +199,17 @@ city = st.text_input("Enter City Name")
 
 if st.button("Get Weather"):
 
-    # Check if city entered
     if city.strip() == "":
         st.warning("Please enter a city name")
         st.stop()
 
     try:
 
+        # CURRENT WEATHER
         weather = ask_weather_ai(f"weather in {city}")
 
-        # Debug (remove later if you want)
-        st.write(weather)
+           # debug (optional)
 
-        # Validate weather data
         if isinstance(weather, dict) and "temperature" in weather:
 
             st.subheader(f"Current Weather in {city.title()}")
@@ -223,10 +221,7 @@ if st.button("Get Weather"):
             col3.metric("🌬 Wind Speed", f"{weather['wind_speed']} m/s")
             col4.metric("☀ Condition", weather["description"].title())
 
-            # -----------------------------
             # FORECAST
-            # -----------------------------
-
             forecast = ask_weather_ai(f"forecast in {city}")
 
             if isinstance(forecast, list):
@@ -245,10 +240,7 @@ if st.button("Get Weather"):
 
                 st.plotly_chart(fig, use_container_width=True)
 
-            # -----------------------------
             # AIR QUALITY
-            # -----------------------------
-
             aqi = ask_weather_ai(f"air quality in {city}")
 
             if isinstance(aqi, dict) and "aqi" in aqi:
