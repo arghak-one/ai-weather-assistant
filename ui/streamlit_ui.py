@@ -199,52 +199,69 @@ city = st.text_input("Enter City Name")
 
 if st.button("Get Weather"):
 
-    weather = ask_weather_ai(f"weather in {city}")
+    # Check if city entered
+    if city.strip() == "":
+        st.warning("Please enter a city name")
+        st.stop()
 
-    if "temperature" in weather:
+    try:
 
-        st.subheader(f"Current Weather in {city.title()}")
+        weather = ask_weather_ai(f"weather in {city}")
 
-        col1,col2,col3,col4 = st.columns(4)
+        # Debug (remove later if you want)
+        st.write(weather)
 
-        col1.metric("🌡 Temperature",f"{weather['temperature']} °C")
-        col2.metric("💧 Humidity",f"{weather['humidity']} %")
-        col3.metric("🌬 Wind Speed",f"{weather['wind_speed']} m/s")
-        col4.metric("☀ Condition",weather["description"].title())
+        # Validate weather data
+        if isinstance(weather, dict) and "temperature" in weather:
 
+            st.subheader(f"Current Weather in {city.title()}")
 
-        # FORECAST
+            col1, col2, col3, col4 = st.columns(4)
 
-        forecast = ask_weather_ai(f"forecast in {city}")
+            col1.metric("🌡 Temperature", f"{weather['temperature']} °C")
+            col2.metric("💧 Humidity", f"{weather['humidity']} %")
+            col3.metric("🌬 Wind Speed", f"{weather['wind_speed']} m/s")
+            col4.metric("☀ Condition", weather["description"].title())
 
-        if isinstance(forecast,list):
+            # -----------------------------
+            # FORECAST
+            # -----------------------------
 
-            df = pd.DataFrame(forecast)
+            forecast = ask_weather_ai(f"forecast in {city}")
 
-            st.subheader("📊 Temperature Forecast")
+            if isinstance(forecast, list):
 
-            fig = px.line(
-            df,
-            x="time",
-            y="temperature",
-            markers=True,
-            template="plotly_dark"
-            )
+                df = pd.DataFrame(forecast)
 
-            st.plotly_chart(fig,use_container_width=True)
+                st.subheader("📊 Temperature Forecast")
 
+                fig = px.line(
+                    df,
+                    x="time",
+                    y="temperature",
+                    markers=True,
+                    template="plotly_dark"
+                )
 
-        # AIR QUALITY
+                st.plotly_chart(fig, use_container_width=True)
 
-        aqi = ask_weather_ai(f"air quality in {city}")
+            # -----------------------------
+            # AIR QUALITY
+            # -----------------------------
 
-        if "aqi" in aqi:
+            aqi = ask_weather_ai(f"air quality in {city}")
 
-            st.subheader("🌫 Air Quality")
+            if isinstance(aqi, dict) and "aqi" in aqi:
 
-            st.metric("AQI",aqi["aqi"])
+                st.subheader("🌫 Air Quality")
+                st.metric("AQI", aqi["aqi"])
 
+        else:
+            st.error("Weather data could not be fetched.")
 
+    except Exception as e:
+        st.error("Something went wrong while fetching weather data.")
+        st.write(e)
 # -----------------------------
 # WEATHER MAP
 # -----------------------------
