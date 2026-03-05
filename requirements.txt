@@ -1,0 +1,8 @@
+groq
+requests
+streamlit
+python-dotenv
+pandas
+plotly
+streamlit-mic-recorder
+SpeechRecognition
