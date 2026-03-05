@@ -6,14 +6,10 @@ from dotenv import load_dotenv
 # Load local env
 load_dotenv()
 
-# API KEY (works for both local and Streamlit Cloud)
 API_KEY = os.getenv("OPENWEATHER_API_KEY")
 
 if not API_KEY:
-    try:
-        API_KEY = st.secrets["OPENWEATHER_API_KEY"]
-    except Exception:
-        API_KEY = None
+    API_KEY = st.secrets.get("OPENWEATHER_API_KEY")
 
 
 # -------------------------
